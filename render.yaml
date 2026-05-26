@@ -29,7 +29,7 @@ services:
           property: url
 
   # Frontend Web App
-  - type: static
+  - type: web
     name: credence-frontend
     runtime: static
     plan: free
