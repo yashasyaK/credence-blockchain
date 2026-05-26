@@ -2,6 +2,7 @@ const VerificationLog = require("../models/VerificationLog");
 const Certificate = require("../models/Certificate");
 const { verifyCertificateOnChain } = require("../services/blockchainService");
 const { calculateTamperRisk } = require("../services/aiDetectionService");
+const mongoose = require("mongoose");
 
 const verifyByHash = async (req, res, next) => {
   try {
@@ -27,8 +28,10 @@ const verifyByHash = async (req, res, next) => {
       }
     }
 
-    // Double check with MongoDB
-    const certificateData = await Certificate.findOne({ certificateHash });
+    const databaseAvailable = mongoose.connection.readyState === 1;
+    const certificateData = databaseAvailable
+      ? await Certificate.findOne({ certificateHash })
+      : null;
 
     // AI/Tamper Risk
     const aiRisk = calculateTamperRisk({
@@ -36,18 +39,19 @@ const verifyByHash = async (req, res, next) => {
       certificateData
     });
 
-    // Save Log
-    const log = await VerificationLog.create({
-      certificateId: certificateData?._id,
-      certificateHash,
-      verifierName,
-      verifierEmail,
-      verificationStatus,
-      blockchainResult,
-      aiRisk,
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"]
-    });
+    const log = databaseAvailable
+      ? await VerificationLog.create({
+          certificateId: certificateData?._id,
+          certificateHash,
+          verifierName,
+          verifierEmail,
+          verificationStatus,
+          blockchainResult,
+          aiRisk,
+          ipAddress: req.ip,
+          userAgent: req.headers["user-agent"]
+        })
+      : null;
 
     return res.status(200).json({
       success: true,
@@ -57,7 +61,7 @@ const verifyByHash = async (req, res, next) => {
         blockchainResult,
         aiRisk,
         certificate: certificateData,
-        logId: log._id
+        logId: log?._id || null
       }
     });
   } catch (error) {
