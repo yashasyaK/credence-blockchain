@@ -29,13 +29,12 @@ services:
           property: url
 
   # Frontend Web App
-  - type: web
+  - type: static
     name: credence-frontend
-    env: static
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishDir: dist
+    publishPath: dist
     envVars:
       - key: VITE_API_URL
         fromService:
