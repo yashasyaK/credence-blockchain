@@ -35,21 +35,14 @@ app.use((req, res) => {
 
 app.use(require("./middleware/errorMiddleware"));
 
-const PORT = process.env.PORT || 5001;
-
-const startServer = async () => {
-  try {
-    await connectDB();
-    return app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Database connection failed:", error.message);
-  }
-};
+// Connect to database immediately for serverless functions
+connectDB();
 
 if (require.main === module) {
-  startServer();
+  const PORT = process.env.PORT || 5001;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 }
 
-module.exports = { app, startServer };
+module.exports = app;
