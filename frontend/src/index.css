@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color: #0a0a0c;
+  color: white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(14, 165, 233, 0.14), transparent 33%),
+    radial-gradient(circle at 90% 32%, rgba(139, 92, 246, 0.14), transparent 32%),
+    #0a0a0c;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image:
+    linear-gradient(rgba(14, 165, 233, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.25) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+  animation: grid-shift 18s linear infinite;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.22);
+  transition: border-color 250ms ease, box-shadow 250ms ease;
+}
+
+.glass:hover {
+  border-color: rgba(14, 165, 233, 0.18);
+  box-shadow: 0 25px 80px rgba(14, 165, 233, 0.07);
+}
+
+.neon-border {
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 180% 180%;
+  animation: spectral-flow 4s ease infinite;
+}
+
+@keyframes spectral-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes grid-shift {
+  to { transform: translateY(54px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

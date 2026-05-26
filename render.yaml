@@ -1,0 +1,45 @@
+services:
+  # Backend API
+  - type: web
+    name: credence-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: BLOCKCHAIN_RPC_URL
+        sync: false
+      - key: CONTRACT_ADDRESS
+        sync: false
+      - key: PRIVATE_KEY
+        sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: credence-frontend
+          property: url
+
+  # Frontend Web App
+  - type: web
+    name: credence-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: credence-backend
+          property: url
+        value: ${VITE_API_URL}/api

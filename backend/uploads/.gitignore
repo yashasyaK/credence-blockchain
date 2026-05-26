@@ -1,0 +1,3 @@
+# Uploaded documents are stored externally; ignore accidental local copies.
+*
+!.gitignore
