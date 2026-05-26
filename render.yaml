@@ -31,10 +31,11 @@ services:
   # Frontend Web App
   - type: static
     name: credence-frontend
+    runtime: static
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         fromService:
@@ -42,3 +43,7 @@ services:
           name: credence-backend
           property: url
         value: ${VITE_API_URL}/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
